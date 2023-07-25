@@ -13,11 +13,15 @@ namespace Explorer.ViewModels
     public class MainViewModel : BaseViewModel
     {
         public ICommand OpenCommand { get; }
+        public ICommand SearchCommand { get; }
         public ObservableCollection<EntityViewModel> DirectoriesAndFiles { get; set; } = new();
-        public string CurrentPath { get; set; }
+        public EntityViewModel SelectedEntity { get; set; }
+        public string PathSearch { get; set; }
+        public string Name { get; set; }
         public MainViewModel()
         {
             OpenCommand = new DelegateCommand(Open);
+            SearchCommand = new DelegateCommand(Search);
             foreach(var driveName in Directory.GetLogicalDrives())
             {
                 DirectoriesAndFiles.Add(new DirectoryViewModel(driveName));
@@ -27,9 +31,9 @@ namespace Explorer.ViewModels
         {
             if(param is DirectoryViewModel directoryVM)
             {
-                CurrentPath = directoryVM.FullPath;
+                PathSearch = directoryVM.FullPath;
                 DirectoriesAndFiles.Clear();
-                var dirInfo = new DirectoryInfo(CurrentPath);
+                var dirInfo = new DirectoryInfo(PathSearch);
                 foreach(var dir in dirInfo.GetDirectories())
                 {
                     DirectoriesAndFiles.Add(new DirectoryViewModel(dir));
@@ -39,6 +43,12 @@ namespace Explorer.ViewModels
                     DirectoriesAndFiles.Add(new FileViewModel(file));
                 }
             }
+        }
+        public void Search(object param)
+        {
+            var searchStr = param.ToString();
+            var dirInfo = new DirectoryViewModel(searchStr);
+            Open(dirInfo);
         }
     }
 }

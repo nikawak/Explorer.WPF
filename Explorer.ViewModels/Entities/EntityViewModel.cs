@@ -4,9 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Explorer.ViewModels
+namespace Explorer.ViewModels.Entities
 {
-    internal class EntityViewModel
+    public class EntityViewModel : BaseViewModel
     {
+        public string Name { get; set; }
+        public string FullPath { get; set; }
+        public EntityViewModel(string name)
+        {
+            Name = name;
+        }
     }
 }

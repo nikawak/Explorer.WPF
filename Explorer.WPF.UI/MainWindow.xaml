@@ -4,10 +4,42 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Explorer.WPF.UI"
+        xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
         Height="450" Width="800"
         WindowStartupLocation="CenterScreen">
     <Grid>
-        <TextBlock Text="{Binding Test}"></TextBlock>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <TextBox Grid.Row="0"
+            Text="{Binding PathSearch}">
+            <b:Interaction.Triggers>
+                <b:EventTrigger EventName="LostFocus">
+                    <b:InvokeCommandAction
+                        Command="{Binding SearchCommand}"
+                        CommandParameter="{Binding PathSearch}"/>
+                </b:EventTrigger>
+            </b:Interaction.Triggers>
+        </TextBox>
+        <ListBox Grid.Row="1"
+            ItemsSource="{Binding DirectoriesAndFiles}"
+                 SelectedItem="{Binding SelectedEntity}">
+            <b:Interaction.Triggers>
+                <b:EventTrigger EventName="MouseDoubleClick">
+                    <b:InvokeCommandAction
+                    Command="{Binding OpenCommand}"
+                    CommandParameter="{Binding SelectedEntity}"/>
+                </b:EventTrigger>
+            </b:Interaction.Triggers>
+            
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Name}"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
     </Grid>
 </Window>

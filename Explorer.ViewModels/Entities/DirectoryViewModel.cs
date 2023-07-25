@@ -4,9 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Explorer.ViewModels
+namespace Explorer.ViewModels.Entities
 {
-    internal class DirectoryViewModel
+    public class DirectoryViewModel : EntityViewModel
     {
+        public DirectoryViewModel(string name) : base(name) 
+        {
+            FullPath = name;
+        }
+        public DirectoryViewModel(DirectoryInfo dirInfo) : base(dirInfo.FullName) 
+        {
+            FullPath = dirInfo.FullName;
+        }
     }
 }
