@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,8 +11,11 @@ namespace Explorer.ViewModels
     {
         public MainViewModel()
         {
-            Test = "Test first binding";
+            foreach(var driveName in Directory.GetLogicalDrives())
+            {
+                DirectoriesAndFiles.Add(new DirectoryViewModel(driveName));
+            }
         }
-        public string Test { get; set; }
+        public ObservableCollection<EntityViewModel> DirectoriesAndFiles { get; set; } = new ();
     }
 }
