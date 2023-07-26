@@ -38,7 +38,7 @@ namespace Explorer.ViewModels.History
             _current = _current?.Next;
         }
         public void MovePrevious() 
-        {
+    {
             _current = _current?.Next;
         } 
     }
