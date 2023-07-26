@@ -14,12 +14,13 @@ namespace Explorer.ViewModels
 {
     public class MainViewModel : BaseViewModel
     {
-        private DirectoryHistory _history = new DirectoryHistory(null);
+        private string _pcName = "My Computer";
+        private DirectoryHistory _history;
 
-        public ICommand OpenCommand { get; }
-        public ICommand SearchCommand { get; }
-        public ICommand MoveForwardCommand { get; }
-        public ICommand MoveBackCommand { get; }
+        public DelegateCommand OpenCommand { get; }
+        public DelegateCommand SearchCommand { get; }
+        public DelegateCommand MoveForwardCommand { get; }
+        public DelegateCommand MoveBackCommand { get; }
 
         public ObservableCollection<EntityViewModel> DirectoriesAndFiles { get; set; } = new();
         public EntityViewModel SelectedEntity { get; set; }
@@ -29,13 +30,14 @@ namespace Explorer.ViewModels
         {
             OpenCommand = new DelegateCommand(Open);
             SearchCommand = new DelegateCommand(Search);
-            MoveForwardCommand = new DelegateCommand(MoveForward);
-            MoveBackCommand = new DelegateCommand(MoveBack);
+            MoveForwardCommand = new DelegateCommand(MoveForward, CanMoveForward);
+            MoveBackCommand = new DelegateCommand(MoveBack, CanMoveBack);
 
-            foreach(var driveName in Directory.GetLogicalDrives())
-            {
-                DirectoriesAndFiles.Add(new DirectoryViewModel(driveName));
-            }
+            var dirVM = new DirectoryViewModel(_pcName);
+            _history = new DirectoryHistory(dirVM);
+            _history.HistoryChanged += OnHistoryChanged;
+
+            OpenDirectory(dirVM);
         }
         public void Open(object param)
         {
@@ -51,15 +53,26 @@ namespace Explorer.ViewModels
             Name = directoryVM.Name;
 
             DirectoriesAndFiles.Clear();
-            var dirInfo = new DirectoryInfo(PathSearch);
-
-            foreach (var dir in dirInfo.GetDirectories())
+           
+            if(directoryVM.Name == _pcName)
             {
-                DirectoriesAndFiles.Add(new DirectoryViewModel(dir));
+                foreach (var driveName in Directory.GetLogicalDrives())
+                {
+                    DirectoriesAndFiles.Add(new DirectoryViewModel(driveName));
+                }
             }
-            foreach (var file in dirInfo.GetFiles())
+            else
             {
-                DirectoriesAndFiles.Add(new FileViewModel(file));
+                var dirInfo = new DirectoryInfo(PathSearch);
+
+                foreach (var dir in dirInfo.GetDirectories())
+                {
+                    DirectoriesAndFiles.Add(new DirectoryViewModel(dir));
+                }
+                foreach (var file in dirInfo.GetFiles())
+                {
+                    DirectoriesAndFiles.Add(new FileViewModel(file));
+                }
             }
         }
         public void Search(object param)
@@ -68,6 +81,8 @@ namespace Explorer.ViewModels
             var dirInfo = new DirectoryViewModel(searchStr);
             Open(dirInfo);
         }
+        public bool CanMoveForward(object param) => _history.CanMoveNext;
+        public bool CanMoveBack(object param) => _history.CanMovePrevious;
         public void MoveForward(object param)
         {
             _history.MoveNext();
@@ -77,6 +92,11 @@ namespace Explorer.ViewModels
         {
             _history.MovePrevious();
             OpenDirectory(_history.Current);
+        }
+        public void OnHistoryChanged(object? sender, EventArgs e)
+        {
+            MoveBackCommand?.RaiseCanExecuteChanged();
+            MoveForwardCommand?.RaiseCanExecuteChanged();
         }
     }
 }

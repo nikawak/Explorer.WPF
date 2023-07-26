@@ -9,21 +9,26 @@ namespace Explorer.ViewModels.Commands
 {
     public class DelegateCommand : ICommand
     {
-        private readonly Action<object?> _action;
+        private readonly Action<object> _execute;
+        private readonly Predicate<object> _canExecute;
+
         public event EventHandler? CanExecuteChanged;
-        public DelegateCommand(Action<object> action)
+        public DelegateCommand(Action<object> execute, Predicate<object> canExecute = null)
         {
-            _action = action;
+            _execute = execute;
+            _canExecute = canExecute;
         }
 
-        public bool CanExecute(object? parameter)
-        {
-            return true;
-        }
+        public bool CanExecute(object? parameter) 
+            => _canExecute == null || _canExecute.Invoke(parameter);
 
         public void Execute(object? parameter)
         {
-            _action?.Invoke(parameter);
+            _execute?.Invoke(parameter);
+        }
+        public void RaiseCanExecuteChanged()
+        {
+            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }
