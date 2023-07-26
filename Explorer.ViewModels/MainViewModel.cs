@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -40,35 +41,42 @@ namespace Explorer.ViewModels
         {
             if (!(param is DirectoryViewModel directoryVM)) return;
             
-            PathSearch = directoryVM.FullPath;
-            DirectoriesAndFiles.Clear();
+            
             _history.AddNode(directoryVM);
+            OpenDirectory(directoryVM);
+        }
+        public void OpenDirectory(DirectoryViewModel directoryVM)
+        {
+            PathSearch = directoryVM.FullPath;
+            Name = directoryVM.Name;
+
+            DirectoriesAndFiles.Clear();
             var dirInfo = new DirectoryInfo(PathSearch);
 
-            foreach(var dir in dirInfo.GetDirectories())
+            foreach (var dir in dirInfo.GetDirectories())
             {
                 DirectoriesAndFiles.Add(new DirectoryViewModel(dir));
             }
             foreach (var file in dirInfo.GetFiles())
             {
                 DirectoriesAndFiles.Add(new FileViewModel(file));
-            }            
+            }
         }
         public void Search(object param)
         {
-            var searchStr = param.ToString();
+            var searchStr = param?.ToString();
             var dirInfo = new DirectoryViewModel(searchStr);
             Open(dirInfo);
         }
         public void MoveForward(object param)
         {
             _history.MoveNext();
-            Open(_history.Current);
+            OpenDirectory(_history.Current);
         }
         public void MoveBack(object param)
         {
             _history.MovePrevious();
-            Open(_history.Current);
+            OpenDirectory(_history.Current);
         }
     }
 }
