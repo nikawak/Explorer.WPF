@@ -11,8 +11,9 @@ namespace Explorer.ViewModels.Entities
         public DirectoryViewModel(string name) : base(name) 
         {
             FullPath = name;
+            Icon = new Icon() { Name = "Folder", Color = "Yellow" };
         }
-        public DirectoryViewModel(DirectoryInfo dirInfo) : base(dirInfo.FullName) 
+        public DirectoryViewModel(DirectoryInfo dirInfo) :this(dirInfo.Name)
         {
             FullPath = dirInfo.FullName;
         }

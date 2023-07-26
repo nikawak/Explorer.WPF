@@ -11,8 +11,9 @@ namespace Explorer.ViewModels.Entities
         public FileViewModel(string name) : base(name) 
         {
             FullPath = name;
+            Icon = new Icon() { Name = "File", Color = "White" };
         }
-        public FileViewModel(FileInfo fileInfo) : base(fileInfo.Name) 
+        public FileViewModel(FileInfo fileInfo) : this(fileInfo.Name) 
         {
             FullPath = fileInfo.FullName;
         }
