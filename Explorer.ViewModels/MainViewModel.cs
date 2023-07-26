@@ -7,13 +7,19 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Explorer.ViewModels.Commands;
 using Explorer.ViewModels.Entities;
+using Explorer.ViewModels.History;
 
 namespace Explorer.ViewModels
 {
     public class MainViewModel : BaseViewModel
     {
+        private DirectoryHistory _history = new DirectoryHistory(null);
+
         public ICommand OpenCommand { get; }
         public ICommand SearchCommand { get; }
+        public ICommand MoveForwardCommand { get; }
+        public ICommand MoveBackCommand { get; }
+
         public ObservableCollection<EntityViewModel> DirectoriesAndFiles { get; set; } = new();
         public EntityViewModel SelectedEntity { get; set; }
         public string PathSearch { get; set; }
@@ -22,6 +28,9 @@ namespace Explorer.ViewModels
         {
             OpenCommand = new DelegateCommand(Open);
             SearchCommand = new DelegateCommand(Search);
+            MoveForwardCommand = new DelegateCommand(MoveForward);
+            MoveBackCommand = new DelegateCommand(MoveBack);
+
             foreach(var driveName in Directory.GetLogicalDrives())
             {
                 DirectoriesAndFiles.Add(new DirectoryViewModel(driveName));
@@ -29,26 +38,37 @@ namespace Explorer.ViewModels
         }
         public void Open(object param)
         {
-            if(param is DirectoryViewModel directoryVM)
+            if (!(param is DirectoryViewModel directoryVM)) return;
+            
+            PathSearch = directoryVM.FullPath;
+            DirectoriesAndFiles.Clear();
+            _history.AddNode(directoryVM);
+            var dirInfo = new DirectoryInfo(PathSearch);
+
+            foreach(var dir in dirInfo.GetDirectories())
             {
-                PathSearch = directoryVM.FullPath;
-                DirectoriesAndFiles.Clear();
-                var dirInfo = new DirectoryInfo(PathSearch);
-                foreach(var dir in dirInfo.GetDirectories())
-                {
-                    DirectoriesAndFiles.Add(new DirectoryViewModel(dir));
-                }
-                foreach (var file in dirInfo.GetFiles())
-                {
-                    DirectoriesAndFiles.Add(new FileViewModel(file));
-                }
+                DirectoriesAndFiles.Add(new DirectoryViewModel(dir));
             }
+            foreach (var file in dirInfo.GetFiles())
+            {
+                DirectoriesAndFiles.Add(new FileViewModel(file));
+            }            
         }
         public void Search(object param)
         {
             var searchStr = param.ToString();
             var dirInfo = new DirectoryViewModel(searchStr);
             Open(dirInfo);
+        }
+        public void MoveForward(object param)
+        {
+            _history.MoveNext();
+            Open(_history.Current);
+        }
+        public void MoveBack(object param)
+        {
+            _history.MovePrevious();
+            Open(_history.Current);
         }
     }
 }
