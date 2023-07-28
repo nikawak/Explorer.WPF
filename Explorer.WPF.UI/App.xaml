@@ -4,32 +4,26 @@
              xmlns:local="clr-namespace:Explorer.WPF.UI"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
-       
-        <Style x:Key="FocusVisual">
-            <Setter Property="Control.Template">
-                <Setter.Value>
-                    <ControlTemplate>
-                        <Rectangle Margin="2" StrokeDashArray="1 2" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" SnapsToDevicePixels="true" StrokeThickness="1"/>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <SolidColorBrush x:Key="Item.MouseOver.Background" Color="LightSlateGray"/>
-        <SolidColorBrush x:Key="Item.MouseOver.Border" Color="Black"/>
-        <SolidColorBrush x:Key="Item.SelectedActive.Background" Color="LightGray"/>
-        <SolidColorBrush x:Key="Item.SelectedActive.Border" Color="Black"/>
-        <SolidColorBrush x:Key="Item.SelectedInactive.Background" Color="#3DDADADA"/>
-        <SolidColorBrush x:Key="Item.SelectedInactive.Border" Color="Gray"/>
+
+        <SolidColorBrush x:Key="App.Background" Color="#0A192F"/>
+        <SolidColorBrush x:Key="App.Bar.Background" Color="#09192F"/>
+        <SolidColorBrush x:Key="Text.Default" Color="#BAC5DD"/>
+        <SolidColorBrush x:Key="Text.UniqueGreen" Color="#4BBBAA"/>
+        
+
+        <SolidColorBrush x:Key="Item.MouseOver.Background" Color="#172A46"/>
+        <SolidColorBrush x:Key="Item.MouseOver.Border" Color="#C6DDFF"/>
+        <SolidColorBrush x:Key="Item.SelectedActive.Background" Color="#35588D"/>
+        <SolidColorBrush x:Key="Item.SelectedActive.Border" Color="#C6DDFF"/>
+        <SolidColorBrush x:Key="Item.SelectedInactive.Background" Color="Transparent"/>
+        <SolidColorBrush x:Key="Item.SelectedInactive.Border" Color="Transparent"/>
+        
         <Style TargetType="{x:Type ListBoxItem}">
             <Setter Property="SnapsToDevicePixels" Value="True"/>
-            <Setter Property="Padding" Value="4,1"/>
-            <Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
-            <Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
-            <Setter Property="Background" Value="{StaticResource Item.SelectedActive.Background }"/>
-            <Setter Property="BorderBrush" Value="{StaticResource Item.SelectedActive.Border }"/>
-            <Setter Property="BorderThickness" Value="2"/>
-            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Background" Value="{StaticResource Item.SelectedInactive.Background }"/>
             <Setter Property="Width" Value="100"></Setter>
             <Setter Property="Height" Value="100"></Setter>
             <Setter Property="Template">
