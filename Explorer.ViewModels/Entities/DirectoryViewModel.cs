@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Explorer.ViewModels.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,6 +17,7 @@ namespace Explorer.ViewModels.Entities
         public DirectoryViewModel(DirectoryInfo dirInfo) :this(dirInfo.Name)
         {
             FullPath = dirInfo.FullName;
+            DateCreated = dirInfo.CreationTime;
         }
     }
 }

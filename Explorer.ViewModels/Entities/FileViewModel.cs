@@ -16,6 +16,7 @@ namespace Explorer.ViewModels.Entities
         public FileViewModel(FileInfo fileInfo) : this(fileInfo.Name) 
         {
             FullPath = fileInfo.FullName;
+            DateCreated = fileInfo.CreationTime;
         }
     }
 }

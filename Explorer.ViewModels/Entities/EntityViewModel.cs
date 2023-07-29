@@ -10,6 +10,7 @@ namespace Explorer.ViewModels.Entities
     {
         public string Name { get; set; }
         public string FullPath { get; set; }
+        public DateTime DateCreated { get; set; }
 
         public Icon Icon { get; set; }
         public EntityViewModel(string name)
